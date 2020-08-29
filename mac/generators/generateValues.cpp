@@ -16,8 +16,6 @@
 #include <string>
 #include <vector>
 
-#include "Scanner.h"
-
 // read Shared.txt and use it to generate GeneratedValues.cpp/GeneratedValues.h
 
 static std::string strip(const char* in)
