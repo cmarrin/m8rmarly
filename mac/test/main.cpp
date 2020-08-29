@@ -14,52 +14,32 @@
 
 #include "Application.h"
 #include "MacSystemInterface.h"
-#include "M8rscript.h"
 #include "Marly.h"
 #include "MFS.h"
 
-static void usage(const char* name)
-{
-    fprintf(stderr,
-                "usage: %s [-p <port>] [-f <filesystem file>] [-l <path>] [-h] <dir> <file> ...\n"
-                "    -p     : set shell port (log port +1, sim port +2)\n"
-                "    -f     : simulated filesystem path\n"
-                "    -l     : path for uploaded files (default '/')\n"
-                "    -h     : print this message\n"
-                "    <file> : file(s) to be uploaded\n"
-            , name);
-}
-
-m8rscript::M8rscriptScriptingLanguage m8rscriptScriptingLanguage;
 marly::MarlyScriptingLanguage marlyScriptingLanguage;
+
+const char* fileList[] = {
+    "scripts/examples/TimeZoneDBClient.marly",
+    "scripts/timing/timing.marly",
+    "scripts/timing/timing.marly",
+    "scripts/simple/hello.marly",
+    "scripts/NetworkTime.marly"
+};
 
 int main(int argc, char * argv[])
 {
-    int opt;
-    uint16_t port = 23;
-    const char* fsFile = "m8rFSFile";
-    const char* uploadPath = "/";
+    m8r::initMacSystemInterface("m8rFSFile", [](const char* s) { ::printf("%s", s); });
+    m8r::Application application(23);
     
-    while ((opt = getopt(argc, argv, "p:u:l:h")) != EOF) {
-        switch(opt)
-        {
-            case 'p': port = atoi(optarg); break;
-            case 'f': fsFile = optarg; break;
-            case 'l': uploadPath = optarg; break;
-            case 'h': usage(argv[0]); break;
-            default : break;
-        }
-    }
-        
-    m8r::initMacSystemInterface(fsFile, [](const char* s) { ::printf("%s", s); });
-    m8r::Application application(port);
-    
-    m8r::system()->registerScriptingLanguage(&m8rscriptScriptingLanguage);
     m8r::system()->registerScriptingLanguage(&marlyScriptingLanguage);
     
     // Upload files if present
-    for (int i = optind; i < argc; ++i) {
-        const char* uploadFilename = argv[i];
+    int count = sizeof(fileList) / sizeof(const char*);
+    const char* uploadPath = "/sys/bin";
+    
+    for (int i = 0; i < count; ++i) {
+        const char* uploadFilename = fileList[i];
 
         m8r::String toPath;
         FILE* fromFile = fopen(uploadFilename, "r");
@@ -119,7 +99,7 @@ int main(int argc, char * argv[])
         fclose(fromFile);
     }
 
-    application.runAutostartTask();
+    application.runAutostartTask("/sys/bin/hello.marly");
     
     while (true) {
         application.runOneIteration();
