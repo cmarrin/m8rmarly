@@ -30,7 +30,7 @@ const char* fileList[] = {
 int main(int argc, char * argv[])
 {
     m8r::initMacSystemInterface("m8rFSFile", [](const char* s) { ::printf("%s", s); });
-    m8r::Application application(23);
+    m8r::Application application;
     
     m8r::system()->registerScriptingLanguage(&marlyScriptingLanguage);
     
