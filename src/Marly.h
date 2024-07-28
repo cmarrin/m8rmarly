@@ -85,9 +85,9 @@ Operators:
                 Interchanges X and Y on top of the stack.
                 
     pick        A0..Ai..An i -> A0..An Ai
-                Remove the nth item on the stack and push it
+                Remove the ith item on the stack and push it
                 
-    tuck        A0..A(i-1) Ai..An X i -> A0..A(i-1) X ai..An
+    tuck        A0..A(i-1) Ai..An X i -> A0..A(i-1) X Ai..An
                 Insert X n locations down the stack
 
     pop         X ->
@@ -102,7 +102,7 @@ Operators:
     remove      [ A0..Ai..An ] i -> [ A0..An ] Ai
                 Remove value at index i and push it.
 
-    insert      [ A0..A(i-1) Ai..An ] X i -> [ A0..A(i-1) X ai..An ]
+    insert      [ A0..A(i-1) Ai..An ] X i -> [ A0..A(i-1) X Ai..An ]
                 Insert X before A(i) in the list
 
     at          [..] i -> X
